@@ -1,19 +1,27 @@
-// DOM overlay: title card, HUD, interaction panel. Text comes from CONTENT.
+// DOM overlay: title card, HUD, interaction panel, ride card. Text comes from CONTENT.
 const UI = (function () {
   const $ = (id) => document.getElementById(id);
-  let scene = null, audio = null, openId = null, titleUp = true;
+  let scene = null, audio = null, openId = null, titleUp = true, pendingOpen = null;
 
-  function init(s) {
-    scene = s;
+  function init() {
     $('title-h').textContent = CONTENT.title;
     $('title-sub').textContent = CONTENT.subtitle;
     $('title-by').textContent = CONTENT.byline;
-    // dev shortcut for screenshots: index.html?go skips the title; ?go&open=notebook opens a panel
+    // dev shortcut for screenshots: ?go skips the title, ?go&open=notebook opens a panel, ?scene=brooklyn picks the start
     const q = new URLSearchParams(location.search);
     if (q.has('go')) {
-      titleUp = false; $('title').style.display = 'none'; s.locked = false;
-      if (q.get('open')) { s.locked = true; open(q.get('open')); }
+      titleUp = false; $('title').style.display = 'none';
+      pendingOpen = q.get('open');
     }
+  }
+
+  // called every time a world scene is created
+  function bind(s) {
+    scene = s;
+    if (titleUp) return;
+    if (pendingOpen) { const id = pendingOpen; pendingOpen = null; open(id); return; }
+    s.cameras.main.fadeIn(250, 0, 0, 0);
+    s.time.delayedCall(250, () => s.arrived());
   }
 
   function hud(found, zoneName, total) {
@@ -43,36 +51,46 @@ const UI = (function () {
     });
     $('p-audio').style.display = it.audio ? 'block' : 'none';
     $('panel').classList.add('on');
-    play();
+    playClip(it.audio);
   }
 
-  function play() {
-    const it = CONTENT.items[openId];
-    stop();
-    if (!it || !it.audio) return;
-    audio = new Audio(it.audio);
-    audio.play().catch(() => {});
+  // plays a recording; returns false (and does nothing) when there is no clip
+  function playClip(src, onEnd) {
+    stopAudio();
+    if (!src) return false;
+    audio = new Audio(src);
+    if (onEnd) audio.onended = onEnd;
+    audio.play().catch(() => { if (onEnd) onEnd(); });
+    return true;
   }
-  function stop() { if (audio) { audio.pause(); audio = null; } }
+  function stopAudio() { if (audio) { audio.onended = null; audio.pause(); audio = null; } }
 
   function close() {
-    stop();
+    stopAudio();
     $('panel').classList.remove('on');
     openId = null;
     scene.locked = false;
   }
 
+  function ride(title, line) {
+    const el = $('ride');
+    if (!title) { el.classList.remove('on'); return; }
+    $('ride-title').textContent = title;
+    $('ride-line').textContent = line || '';
+    el.classList.add('on');
+  }
+
   function handleKeys(sc, k) {
     const J = Phaser.Input.Keyboard.JustDown;
     if (titleUp) {
-      if (J(k.enter) || J(k.space) || J(k.e)) { titleUp = false; $('title').classList.add('off'); sc.locked = false; }
+      if (J(k.enter) || J(k.space) || J(k.e)) { titleUp = false; $('title').classList.add('off'); sc.arrived(); }
       return;
     }
     if (openId) {
       if (J(k.esc) || J(k.e) || J(k.space)) close();
-      else if (J(k.r)) play();
+      else if (J(k.r)) playClip(CONTENT.items[openId].audio);
     }
   }
 
-  return { init, hud, prompt, open, close, handleKeys };
+  return { init, bind, hud, prompt, open, close, ride, playClip, stopAudio, handleKeys };
 })();

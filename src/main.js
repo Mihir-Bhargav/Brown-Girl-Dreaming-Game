@@ -1,5 +1,5 @@
 // Brown Girl Dreaming: interactive world. Engine: Phaser 3.
-// Gameplay + layout live here; ALL words come from content.js.
+// Gameplay lives here, layouts in maps.js, ALL words in content.js.
 
 const TILE = 16;
 const COLS = 30;
@@ -8,26 +8,33 @@ const WORLD_W = COLS * TILE;
 const WORLD_H = ROWS * TILE;
 const INTERACT_DIST = 30;
 
-// Interactable spots: id matches an entry in CONTENT.items
-const SPOTS = [
-  { id: 'notebook', tex: 'notebook', x: 146, y: 108, float: true },
-  { id: 'reddirt', tex: 'mound', x: 216, y: 160 },
-  { id: 'bus', tex: 'busstop', x: 404, y: 258, ix: 404, iy: 250 },
-];
+const STATE = { seen: new Set() };
+const TOTAL = Object.values(MAPS).reduce((n, m) => n + m.spots.filter((s) => s.id).length, 0);
+const START = (() => {
+  const q = new URLSearchParams(location.search).get('scene');
+  return MAPS[q] ? q : CONTENT.zones[0].scene;
+})();
 
 class WorldScene extends Phaser.Scene {
   constructor() { super('world'); }
 
+  init(data) {
+    this.mapId = data.map || START;
+    this.spawn = data.spawn || null;
+    this.zoneIndex = data.zone ?? CONTENT.zones.findIndex((z) => z.scene === this.mapId);
+  }
+
   create() {
     buildTextures(this);
-    this.locked = true;          // true while title/overlay is up
-    this.seen = new Set();
+    this.map = MAPS[this.mapId];
+    this.cameras.main.setBackgroundColor(this.map.bg);
+    this.locked = true;
     this.solids = this.physics.add.staticGroup();
 
-    this.buildGround();
-    this.buildScenery();
+    this.map.build(this);
     this.buildSpots();
-    this.buildPlayer();
+    const z = CONTENT.zones[this.zoneIndex];
+    this.buildPlayer(this.spawn || z);
 
     this.physics.world.setBounds(0, 0, WORLD_W, WORLD_H);
     this.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H);
@@ -40,34 +47,14 @@ class WorldScene extends Phaser.Scene {
       n: 'N', b: 'B', r: 'R', enter: 'ENTER',
     });
 
-    this.zoneIndex = 0;
-    UI.init(this);
-    UI.hud(0, CONTENT.zones[0].name, SPOTS.length);
+    UI.hud(STATE.seen.size, z.name, TOTAL);
+    UI.bind(this);
   }
 
-  // ---------- world building ----------
-  buildGround() {
-    const dirt = new Set();
-    const mark = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) dirt.add(x + ',' + y); };
-    mark(7, 8, 8, 16);     // path down from the porch
-    mark(7, 15, 26, 16);   // road toward the bus stop
-    const r = rng(42);
-    for (let y = 0; y < ROWS; y++) {
-      for (let x = 0; x < COLS; x++) {
-        let key;
-        if (x >= 5 && x <= 9 && (y === 6 || y === 7)) key = 'plank';
-        else if (dirt.has(x + ',' + y)) key = 'dirt' + ((r() * 2) | 0);
-        else key = 'grass' + ((r() * 3) | 0);
-        this.add.image(x * TILE, y * TILE, key).setOrigin(0).setDepth(0);
-      }
-    }
-    const f = rng(9);
-    for (let n = 0; n < 40; n++) {
-      const x = (f() * (WORLD_W - 10)) | 0, y = (f() * (WORLD_H - 10)) | 0;
-      const tx = (x / TILE) | 0, ty = (y / TILE) | 0;
-      if (dirt.has(tx + ',' + ty) || (tx >= 4 && tx <= 10 && ty <= 7)) continue;
-      this.add.image(x, y, 'flower').setOrigin(0.5, 1).setDepth(y);
-    }
+  // called by UI once the title / fade-in is done
+  arrived() {
+    this.locked = false;
+    UI.playClip(CONTENT.scenes[this.mapId].audio);
   }
 
   solid(x, y, w, h) {
@@ -76,41 +63,30 @@ class WorldScene extends Phaser.Scene {
     this.solids.add(z);
   }
 
-  buildScenery() {
-    // house: x 64..176, y 16..96
-    this.add.image(64, 96, 'house').setOrigin(0, 1).setDepth(96);
-    this.solid(66, 16, 108, 76);
-    // trees
-    [[24, 50], [24, 130], [22, 214], [44, 300], [70, 306], [262, 46], [300, 70], [226, 40],
-     [352, 96], [452, 44], [454, 150], [440, 214], [330, 300], [260, 308], [430, 300]].forEach(([x, y]) => {
-      this.add.image(x, y, 'tree').setOrigin(0.5, 1).setDepth(y);
-      this.solid(x - 4, y - 7, 8, 6);
-    });
-  }
-
   buildSpots() {
-    SPOTS.forEach((s) => {
-      const img = this.add.image(s.x, s.y, s.tex).setOrigin(0.5, 1).setDepth(s.y);
-      if (s.float) this.tweens.add({ targets: img, y: s.y - 2, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      if (s.id === 'bus') this.solid(s.x - 18, s.y - 20, 28, 14);
-      s.ix = s.ix ?? s.x; s.iy = s.iy ?? s.y - 6;
-      const m = this.add.image(s.ix, s.iy - 24, 'mark').setDepth(9999);
-      this.tweens.add({ targets: m, y: m.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      s.marker = m;
+    this.spots = this.map.spots.map((def) => {
+      const s = { ...def, ix: def.ix ?? def.x, iy: def.iy ?? def.y - 6 };
+      if (s.tex) {
+        const img = this.add.image(s.x, s.y, s.tex).setOrigin(0.5, 1).setDepth(s.y);
+        if (s.float) this.tweens.add({ targets: img, y: s.y - 2, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      }
+      if (s.solid) { const [dx, dy, w, h] = s.solid; this.solid(s.x + dx, s.y + dy, w, h); }
+      s.marker = this.add.image(s.ix, s.iy - 24, s.travel ? 'markgo' : 'mark').setDepth(9999);
+      if (s.id && STATE.seen.has(s.id)) s.marker.setAlpha(0.35);
+      this.tweens.add({ targets: s.marker, y: s.marker.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      return s;
     });
   }
 
-  buildPlayer() {
-    const z = CONTENT.zones[0];
-    this.shadow = this.add.image(z.x, z.y, 'shadow').setDepth(1);
-    this.player = this.physics.add.sprite(z.x, z.y, 'girl_down').setOrigin(0.5, 1);
+  buildPlayer(at) {
+    this.shadow = this.add.image(at.x, at.y, 'shadow').setDepth(1);
+    this.player = this.physics.add.sprite(at.x, at.y, 'girl_down').setOrigin(0.5, 1);
     this.player.body.setSize(8, 5).setOffset(4, 11);
     this.player.setCollideWorldBounds(true);
     this.physics.add.collider(this.player, this.solids);
     this.facing = 'down';
   }
 
-  // ---------- loop ----------
   update(time) {
     const k = this.keys;
     const p = this.player;
@@ -138,42 +114,124 @@ class WorldScene extends Phaser.Scene {
     p.setDepth(p.y);
     this.shadow.setPosition(p.x, p.y - 1).setDepth(p.y - 1);
 
-    // nearest interactable
     let near = null, best = INTERACT_DIST;
-    SPOTS.forEach((s) => {
+    this.spots.forEach((s) => {
       const d = Phaser.Math.Distance.Between(p.x, p.y - 4, s.ix, s.iy);
       if (d < best) { best = d; near = s; }
     });
-    this.near = near;
-    UI.prompt(near ? CONTENT.items[near.id].title : null);
+    UI.prompt(near ? (near.travel ? rideOf(this.mapId, near.travel).label : CONTENT.items[near.id].title) : null);
     if (near && (Phaser.Input.Keyboard.JustDown(k.e) || Phaser.Input.Keyboard.JustDown(k.space))) {
-      this.locked = true;
-      this.seen.add(near.id);
-      near.marker.setAlpha(0.35);
-      UI.open(near.id);
-      UI.hud(this.seen.size, null, SPOTS.length);
+      if (near.travel) {
+        this.travel(near.travel, null, CONTENT.zones.findIndex((z) => z.scene === near.travel));
+      } else {
+        this.locked = true;
+        STATE.seen.add(near.id);
+        near.marker.setAlpha(0.35);
+        UI.open(near.id);
+        UI.hud(STATE.seen.size, null, TOTAL);
+      }
     }
 
-    // presentation hotkeys
     if (Phaser.Input.Keyboard.JustDown(k.n)) this.gotoZone(this.zoneIndex + 1);
     if (Phaser.Input.Keyboard.JustDown(k.b)) this.gotoZone(this.zoneIndex - 1);
   }
 
+  travel(to, spawn, zone) {
+    this.locked = true;
+    UI.prompt(null);
+    UI.stopAudio();
+    this.cameras.main.fadeOut(300, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.scene.start('ride', { from: this.mapId, to, spawn, zone });
+    });
+  }
+
   gotoZone(i) {
     const n = CONTENT.zones.length;
-    this.zoneIndex = ((i % n) + n) % n;
-    const z = CONTENT.zones[this.zoneIndex];
+    const idx = ((i % n) + n) % n;
+    const z = CONTENT.zones[idx];
+    if (z.scene !== this.mapId) { this.travel(z.scene, { x: z.x, y: z.y }, idx); return; }
+    this.zoneIndex = idx;
     this.locked = true;
     this.cameras.main.fadeOut(180, 0, 0, 0);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.player.setPosition(z.x, z.y);
       this.cameras.main.centerOn(z.x, z.y);
       this.cameras.main.fadeIn(180, 0, 0, 0);
-      UI.hud(this.seen.size, z.name, SPOTS.length);
+      UI.hud(STATE.seen.size, z.name, TOTAL);
       this.locked = false;
     });
   }
 }
+
+function rideOf(from, to) {
+  return CONTENT.rides[from + '>' + to] || { label: 'Ride the bus', title: CONTENT.scenes[from].name + '  →  ' + CONTENT.scenes[to].name, line: '', audio: null };
+}
+
+// The bus ride between scenes: a night road, a Greyhound, and a title card.
+class RideScene extends Phaser.Scene {
+  constructor() { super('ride'); }
+
+  init(data) { this.d = data; }
+
+  create() {
+    buildTextures(this);
+    const W = 400, H = 225;
+    const order = Object.keys(MAPS);
+    this.dir = order.indexOf(this.d.to) > order.indexOf(this.d.from) ? 1 : -1;
+    const g = this.add.graphics();
+    const sky = ['#0b1026', '#111834', '#182042', '#1f2550', '#2a2a5c'];
+    sky.forEach((col, i) => { g.fillStyle(Phaser.Display.Color.HexStringToColor(col).color); g.fillRect(0, i * 28, W, 28); });
+    for (let n = 0; n < 70; n++) {
+      const st = this.add.rectangle(Math.random() * W, Math.random() * 130, 1, 1, 0xffffff, 0.5 + Math.random() * 0.5).setOrigin(0);
+      this.tweens.add({ targets: st, alpha: 0.15, duration: 600 + Math.random() * 1400, yoyo: true, repeat: -1, delay: Math.random() * 1000 });
+    }
+    g.fillStyle(0xf6ecd4); g.fillCircle(330, 34, 9);
+    g.fillStyle(0x0b1026); g.fillCircle(334, 31, 8);
+    g.fillStyle(0x141a2e);
+    for (let x = 0; x < W; x += 4) g.fillRect(x, 120 + Math.sin(x / 37) * 10 + Math.sin(x / 13) * 3, 4, 40);
+    g.fillStyle(0x2b2d33); g.fillRect(0, 150, W, 50);
+    g.fillStyle(0x4a4c52); g.fillRect(0, 150, W, 2); g.fillRect(0, 198, W, 2);
+    g.fillStyle(0x0d0f14); g.fillRect(0, 200, W, H - 200);
+
+    this.dashes = [];
+    for (let x = 0; x < W + 40; x += 40) this.dashes.push(this.add.rectangle(x, 174, 18, 2, 0xe8c547).setOrigin(0));
+    this.poles = [];
+    for (let x = 0; x < W + 120; x += 120) this.poles.push(this.add.rectangle(x, 104, 2, 46, 0x3a3020).setOrigin(0));
+
+    const bus = this.add.image(W / 2, 190, 'greyhound').setOrigin(0.5, 1).setFlipX(this.dir < 0);
+    this.tweens.add({ targets: bus, y: 189, duration: 140, yoyo: true, repeat: -1 });
+    this.add.rectangle(W / 2 + this.dir * 44, 178, 34, 6, 0xffe066, 0.25).setBlendMode(Phaser.BlendModes.ADD);
+
+    const ride = rideOf(this.d.from, this.d.to);
+    UI.ride(ride.title, ride.line);
+    this.cameras.main.fadeIn(300, 0, 0, 0);
+    this.keys = this.input.keyboard.addKeys({ e: 'E', space: 'SPACE', enter: 'ENTER' });
+    this.done = false;
+    if (!UI.playClip(ride.audio, () => this.finish())) this.time.delayedCall(3200, () => this.finish());
+  }
+
+  finish() {
+    if (this.done) return;
+    this.done = true;
+    UI.stopAudio();
+    this.cameras.main.fadeOut(300, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      UI.ride(null);
+      this.scene.start('world', { map: this.d.to, spawn: this.d.spawn || MAPS[this.d.to].arrive, zone: this.d.zone });
+    });
+  }
+
+  update(time, dt) {
+    const J = Phaser.Input.Keyboard.JustDown;
+    if (J(this.keys.e) || J(this.keys.space) || J(this.keys.enter)) this.finish();
+    const v = -this.dir * dt * 0.18;
+    this.dashes.forEach((d) => { d.x += v; if (d.x < -40) d.x += 440; if (d.x > 400) d.x -= 440; });
+    this.poles.forEach((p) => { p.x += v * 0.6; if (p.x < -120) p.x += 480; if (p.x > 400) p.x -= 480; });
+  }
+}
+
+UI.init();
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -181,8 +239,8 @@ const game = new Phaser.Game({
   width: 400,
   height: 225,
   pixelArt: true,
-  backgroundColor: '#1b2a1b',
+  backgroundColor: '#000000',
   physics: { default: 'arcade', arcade: { debug: false } },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-  scene: [WorldScene],
+  scene: [WorldScene, RideScene],
 });
