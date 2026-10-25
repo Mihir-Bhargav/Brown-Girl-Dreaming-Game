@@ -104,6 +104,7 @@ const MAPS = {
       { id: 'wall', tex: null, x: 412, y: 108, ix: 412, iy: 106 },
       { travel: 'greenville', tex: 'greyhound', x: 44, y: 214, ix: 84, iy: 204, solid: [-30, -18, 60, 16] },
       { travel: 'ending', tex: null, x: 300, y: 160, ix: 278, iy: 160 },
+      { game: 'run', tex: null, x: 236, y: 254, ix: 236, iy: 254 },
     ],
     build(s) {
       const r = rng(77);

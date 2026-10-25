@@ -59,9 +59,20 @@ const UI = (function () {
     $('hud-found').textContent = 'Discovered ' + found + '/' + total;
   }
 
-  function prompt(label) {
+  function prompt(label, locked) {
     const el = $('prompt');
-    if (label) { el.textContent = 'E  ' + label; el.classList.add('on'); } else el.classList.remove('on');
+    if (label) { el.textContent = locked ? label : 'E  ' + label; el.classList.add('on'); } else el.classList.remove('on');
+    el.classList.toggle('locked', !!locked);
+  }
+
+  // a short message near the top of the screen
+  let toastTimer = null;
+  function toast(msg) {
+    const el = $('toast');
+    el.textContent = msg;
+    el.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('on'), 2400);
   }
 
   function open(id) {
@@ -100,8 +111,39 @@ const UI = (function () {
     $('panel').classList.remove('on');
     const wasEnding = openId === 'eachworld';
     openId = null;
-    if (wasEnding && CONTENT.finale) cards(CONTENT.finale, () => { scene.locked = false; });
+    if (wasEnding && CONTENT.finale) cards(CONTENT.finale, showOutro);
     else scene.locked = false;
+  }
+
+  // the end screen, styled like the title screen
+  let outroUp = false;
+  function showOutro() {
+    const o = CONTENT.outro;
+    if (!o) { scene.locked = false; return; }
+    $('outro-h').textContent = o.title;
+    $('outro-quote').textContent = (o.quote || '').replace(' / ', '\n');
+    $('outro-by').textContent = o.byline || '';
+    $('outro-go').textContent = o.prompt || 'PRESS ENTER';
+    $('outro').classList.add('on');
+    outroUp = true;
+  }
+
+  // mini-game overlay: the letters of her name collected so far, and lives left
+  function runHud(run) {
+    const el = $('runhud'), hint = $('hint');
+    if (!hint.dataset.walk) hint.dataset.walk = hint.innerHTML;
+    if (!run) { el.classList.remove('on'); hint.innerHTML = hint.dataset.walk; return; }
+    hint.textContent = CONTENT.minigame.controls;
+    const word = $('run-word');
+    word.innerHTML = '';
+    [...run.word].forEach((ch, i) => {
+      const s = document.createElement('span');
+      s.textContent = ch;
+      if (i < run.got) s.className = 'got';
+      word.appendChild(s);
+    });
+    $('run-lives').textContent = '♥'.repeat(run.lives) + '♡'.repeat(5 - run.lives);
+    el.classList.add('on');
   }
 
   function ride(title, line, dream) {
@@ -119,6 +161,10 @@ const UI = (function () {
       if (J(k.enter) || J(k.space) || J(k.e)) { titleUp = false; $('title').classList.add('off'); sc.arrived(); }
       return;
     }
+    if (outroUp) {
+      if (J(k.enter) || J(k.e) || J(k.space)) { outroUp = false; $('outro').classList.remove('on'); scene.locked = false; }
+      return;
+    }
     if (cardList) {
       if (J(k.esc)) endCards();
       else if (J(k.r)) playClip(cardList[cardIdx].audio);
@@ -131,5 +177,5 @@ const UI = (function () {
     }
   }
 
-  return { init, bind, hud, prompt, open, close, cards, ride, playClip, stopAudio, handleKeys };
+  return { init, bind, hud, prompt, toast, open, close, cards, ride, runHud, playClip, stopAudio, handleKeys };
 })();

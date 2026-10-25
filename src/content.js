@@ -7,6 +7,9 @@ window.CONTENT = {
   subtitle: 'Claiming an identity: an interactive analysis',
   byline: 'Mihir Prabhat',
 
+  // Shown when you try to leave a place before examining every yellow marker in it.
+  gate: 'Discover every yellow marker here first ({done} / {total})',
+
   // One entry per place, in journey order. `cards` are the slides shown on first arrival (C shows them again).
   scenes: {
     ohio: {
@@ -69,6 +72,49 @@ window.CONTENT = {
     },
     // The ending has no arrival cards: its conclusion plays after you examine "Each World" (see items.eachworld.then).
     ending: { name: 'The Page', cards: [] },
+  },
+
+  // The end screen, shown after the works cited card. Enter returns to the page.
+  outro: {
+    title: 'The End',
+    quote: '“My name is Jacqueline Woodson / and I am ready for the ride.”',
+    byline: 'Brown Girl Dreaming: an interactive analysis by Mihir Prabhat',
+    prompt: 'PRESS ENTER',
+  },
+
+  // Mini-game on Madison Street (the green marker by the hopscotch).
+  minigame: {
+    label: 'Race down Madison Street',
+    word: 'JACQUELINE',
+    controls: 'Lanes: ← / →  ·  Jump: ↑ or Space  ·  Back to the block: Esc',
+    intro: {
+      kicker: 'MINI-GAME · MADISON STREET',
+      heading: 'The fastest girl on Madison Street',
+      quote: { lines: ['Never learns to sprint', 'barefoot down the block', 'to become', 'the fastest girl', 'on Madison Street.'], cite: '“tomboy,” Part IV' },
+      points: [
+        'Collect the letters of her full name, in order: J-A-C-Q-U-E-L-I-N-E.',
+        '← / → change lanes. ↑ or Space jumps over bottles, jump ropes and hydrants. Dodge the parked cars.',
+        'Five hits and the game is over. Take your time: the street is slow. Esc goes back to the block.',
+      ],
+      audio: null,
+    },
+    win: {
+      kicker: 'YOU WROTE HER NAME',
+      heading: 'JACQUELINE',
+      quote: { lines: ['But I do and because of this', 'Tomboy becomes my new name.'], cite: '“tomboy,” Part IV' },
+      points: [
+        'Even on the block, other people hand her a new name: “Tomboy.”',
+        'But you just spelled the one she claims for herself.',
+      ],
+      audio: null,
+    },
+    lose: {
+      kicker: 'GAME OVER',
+      heading: 'Hope Dell Jackie—inside!',
+      quote: { lines: ['When my mother calls,', 'Hope Dell Jackie—inside!', 'the game is over.'], cite: '“game over,” Part IV' },
+      points: ['Press E to race again.'],
+      audio: null,
+    },
   },
 
   // Shown after closing the "Each World" panel: the conclusion and works cited.

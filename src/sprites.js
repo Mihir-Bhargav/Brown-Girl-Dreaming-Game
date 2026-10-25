@@ -520,6 +520,46 @@ function buildTextures(scene) {
   patch('snowpatch', 44, 14, '#e4ecf3');
   patch('dirtpatch', 44, 14, '#b4502f');
   patch('walkpatch', 44, 14, '#b8b4aa');
+
+  // ---- Madison Street run (mini-game) ----
+  makeTex(scene, 'markplay', 7, 9, (c) => {
+    box(c, 3, 0, 1, 1, '#e3ffd6'); box(c, 2, 1, 3, 1, '#b8f5a0'); box(c, 1, 2, 5, 1, '#7fe05c');
+    box(c, 0, 3, 7, 1, '#7fe05c'); box(c, 1, 4, 5, 1, '#4cb52c'); box(c, 2, 5, 3, 1, '#4cb52c'); box(c, 3, 6, 1, 1, '#2f7d18');
+  });
+  makeTex(scene, 'bottles', 20, 9, (c) => {
+    [[1, 5, '#2f8a3b'], [6, 3, '#7a4a1e'], [11, 6, '#2f8a3b'], [15, 4, '#9fd6c8']].forEach(([x, y, col]) => {
+      box(c, x, y, 4, 2, col); box(c, x + 1, y - 1, 2, 1, col); box(c, x + 1, y, 1, 1, '#ffffff');
+    });
+    box(c, 3, 8, 3, 1, '#9fd6c8'); box(c, 9, 7, 2, 1, '#2f8a3b'); box(c, 14, 8, 3, 1, '#7a4a1e');
+  });
+  makeTex(scene, 'rope', 40, 14, (c) => {
+    c.strokeStyle = '#f4efe4'; c.lineWidth = 1.6;
+    c.beginPath(); c.moveTo(3, 4); c.quadraticCurveTo(20, 16, 37, 4); c.stroke();
+    c.strokeStyle = '#d14b6a'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(3, 5); c.quadraticCurveTo(20, 13, 37, 5); c.stroke();
+    box(c, 1, 1, 3, 6, '#c0392b'); box(c, 36, 1, 3, 6, '#c0392b');
+  });
+  makeTex(scene, 'car', 34, 24, (c) => {
+    box(c, 2, 8, 30, 12, '#2f6f8f'); box(c, 2, 8, 30, 2, '#4f93b5');
+    box(c, 7, 2, 20, 8, '#2f6f8f'); box(c, 9, 3, 16, 5, '#9fc3d6'); box(c, 10, 4, 4, 2, '#d6ecf5');
+    box(c, 3, 12, 6, 3, '#e74c3c'); box(c, 25, 12, 6, 3, '#e74c3c');
+    box(c, 12, 14, 10, 3, '#f4efe4'); box(c, 2, 18, 30, 2, '#9aa0a8');
+    box(c, 3, 20, 6, 4, '#16181c'); box(c, 25, 20, 6, 4, '#16181c');
+  });
+}
+
+// One paper tile per letter of her name, drawn in the page's pixel font.
+function buildLetterTextures(scene, word) {
+  const font = document.fonts && document.fonts.check('8px "Press Start 2P"') ? '8px "Press Start 2P"' : 'bold 11px monospace';
+  [...new Set(word)].forEach((ch) => {
+    makeTex(scene, 'letter_' + ch, 16, 18, (c) => {
+      box(c, 0, 0, 16, 18, '#1f1610'); box(c, 1, 1, 14, 16, '#fbf7ec');
+      for (let y = 5; y < 17; y += 4) box(c, 1, y, 14, 1, '#d6e3f0');
+      box(c, 3, 1, 1, 16, '#efb4b4');
+      c.fillStyle = '#2b3a55'; c.font = font; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.fillText(ch, 9, 10);
+    });
+  });
 }
 
 function rowhouse(scene, key, col, seed, extra) {

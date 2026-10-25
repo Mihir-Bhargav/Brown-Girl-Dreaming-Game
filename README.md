@@ -31,7 +31,11 @@ The pixel fonts load from Google Fonts, so they need an internet connection. Off
 | **Brooklyn** (Madison Street) | Finding her voice | P.S. 106 · The Library · The Composition Notebook · The Pink Factory Wall |
 | **The Page** (ending) | Conclusion · Works cited | Each World (the desk) |
 
-To travel, walk to a Greyhound (blue marker) and press E. In Brooklyn, sit beneath the oak tree to reach the ending. The cards show the first time you arrive in each place.
+To travel, walk to a Greyhound (blue marker) and press E. **Checkpoints:** the way forward out of each place (the bus out of Ohio and out of Greenville, and the oak tree in Brooklyn) stays locked until every yellow marker there has been examined. Going back to an earlier place is always allowed, and N won't skip ahead past an unfinished place either. The message lives under `gate` in `src/content.js`. In Brooklyn, sit beneath the oak tree to reach the ending. The cards show the first time you arrive in each place. After "Each World", the conclusion and works-cited cards play, then a "The End" screen (Enter returns to the page).
+
+### Mini-game: The Fastest Girl on Madison Street
+
+The green marker by the hopscotch in Brooklyn starts a three-lane runner down Madison Street, based on the poem "tomboy". Collect the letters of her full name, J-A-C-Q-U-E-L-I-N-E, in order. Use ← / → to change lanes and ↑ or Space to jump over broken bottles, jump ropes and hydrants, and dodge the parked cars. Five hits brings "Hope Dell Jackie—inside! / the game is over." Esc returns to the block at any time. Its text lives under `minigame` in `src/content.js`.
 
 The analysis text is a **draft**. See `pdfs/analysis draft.md` for the overview behind it.
 
