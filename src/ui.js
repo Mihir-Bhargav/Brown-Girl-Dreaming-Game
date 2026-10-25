@@ -20,8 +20,38 @@ const UI = (function () {
     scene = s;
     if (titleUp) return;
     if (pendingOpen) { const id = pendingOpen; pendingOpen = null; open(id); return; }
-    s.cameras.main.fadeIn(250, 0, 0, 0);
+    s.cameras.main.fadeIn(250, ...(s.map.dream ? [251, 247, 236] : [0, 0, 0]));
     s.time.delayedCall(250, () => s.arrived());
+  }
+
+  // slide cards: shown one after another; E / Space / Enter advances, Esc skips the rest
+  let cardList = null, cardIdx = 0, cardDone = null;
+  function cards(list, onDone) {
+    cardList = list; cardIdx = 0; cardDone = onDone;
+    showCard();
+  }
+  function showCard() {
+    const c = cardList[cardIdx];
+    $('c-kicker').textContent = c.kicker || '';
+    $('c-head').textContent = c.heading || '';
+    const q = $('c-quote');
+    q.style.display = c.quote ? 'block' : 'none';
+    q.textContent = c.quote ? c.quote.lines.join('\n') : '';
+    $('c-cite').textContent = c.quote && c.quote.cite ? '(' + c.quote.cite + ')' : '';
+    const ul = $('c-points');
+    ul.innerHTML = '';
+    (c.points || []).forEach((t) => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+    $('c-step').textContent = cardList.length > 1 ? (cardIdx + 1) + ' / ' + cardList.length : '';
+    $('c-audio').style.display = c.audio ? 'inline' : 'none';
+    $('slide').classList.add('on');
+    playClip(c.audio);
+  }
+  function endCards() {
+    stopAudio();
+    $('slide').classList.remove('on');
+    const done = cardDone;
+    cardList = null; cardDone = null;
+    if (done) done();
   }
 
   function hud(found, zoneName, total) {
@@ -68,15 +98,18 @@ const UI = (function () {
   function close() {
     stopAudio();
     $('panel').classList.remove('on');
+    const wasEnding = openId === 'eachworld';
     openId = null;
-    scene.locked = false;
+    if (wasEnding && CONTENT.finale) cards(CONTENT.finale, () => { scene.locked = false; });
+    else scene.locked = false;
   }
 
-  function ride(title, line) {
+  function ride(title, line, dream) {
     const el = $('ride');
     if (!title) { el.classList.remove('on'); return; }
     $('ride-title').textContent = title;
     $('ride-line').textContent = line || '';
+    el.classList.toggle('dream', !!dream);
     el.classList.add('on');
   }
 
@@ -86,11 +119,17 @@ const UI = (function () {
       if (J(k.enter) || J(k.space) || J(k.e)) { titleUp = false; $('title').classList.add('off'); sc.arrived(); }
       return;
     }
+    if (cardList) {
+      if (J(k.esc)) endCards();
+      else if (J(k.r)) playClip(cardList[cardIdx].audio);
+      else if (J(k.e) || J(k.space) || J(k.enter)) { if (++cardIdx < cardList.length) showCard(); else endCards(); }
+      return;
+    }
     if (openId) {
       if (J(k.esc) || J(k.e) || J(k.space)) close();
       else if (J(k.r)) playClip(CONTENT.items[openId].audio);
     }
   }
 
-  return { init, bind, hud, prompt, open, close, ride, playClip, stopAudio, handleKeys };
+  return { init, bind, hud, prompt, open, close, cards, ride, playClip, stopAudio, handleKeys };
 })();

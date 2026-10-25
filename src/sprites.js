@@ -399,6 +399,127 @@ function buildTextures(scene) {
     [[3, '#5a7fc0'], [7, '#efe6d2'], [11, '#9a7b55']].forEach(([x, robe]) => { box(c, x, 4, 2, 2, '#efe6d2'); box(c, x - 1, 6, 4, 8, robe); });
     box(c, 7, 0, 2, 4, '#7fbfe0');
   });
+
+  // ---- Ohio: snow, river, the Nelsonville house, University Hospital ----
+  [0, 1, 2].forEach((i) => {
+    makeTex(scene, 'snow' + i, 16, 16, (c) => {
+      const r = rng(600 + i);
+      box(c, 0, 0, 16, 16, '#eef3f7');
+      for (let n = 0; n < 18; n++) box(c, (r() * 16) | 0, (r() * 16) | 0, 1, 1, r() > 0.5 ? '#dde6ee' : '#ffffff');
+      if (i === 2) { box(c, 3, 9, 4, 1, '#d2dde7'); box(c, 10, 4, 3, 1, '#d2dde7'); }
+    });
+  });
+  [0, 1].forEach((i) => {
+    makeTex(scene, 'slush' + i, 16, 16, (c) => {
+      const r = rng(620 + i);
+      box(c, 0, 0, 16, 16, '#c9cfd4');
+      for (let n = 0; n < 24; n++) box(c, (r() * 16) | 0, (r() * 16) | 0, 1, 1, r() > 0.5 ? '#b4b5b0' : '#dfe4e8');
+    });
+    makeTex(scene, 'water' + i, 16, 16, (c) => {
+      const r = rng(640 + i);
+      box(c, 0, 0, 16, 16, '#3d6e8f');
+      for (let n = 0; n < 5; n++) box(c, (r() * 12) | 0, (r() * 16) | 0, 3 + ((r() * 3) | 0), 1, r() > 0.5 ? '#5b8fb0' : '#335f7d');
+    });
+  });
+  makeTex(scene, 'iceedge', 16, 16, (c) => {
+    box(c, 0, 0, 16, 7, '#eef3f7'); box(c, 0, 7, 16, 3, '#cfe6f2'); box(c, 0, 10, 16, 6, '#3d6e8f');
+    box(c, 2, 11, 5, 1, '#5b8fb0'); box(c, 0, 9, 16, 1, '#a9cfe2');
+  });
+  makeTex(scene, 'bank_dn', 16, 16, (c) => { box(c, 0, 0, 16, 16, '#eef3f7'); box(c, 0, 11, 16, 2, '#ffffff'); box(c, 0, 13, 16, 3, '#9aa3ab'); });
+  makeTex(scene, 'bank_up', 16, 16, (c) => { box(c, 0, 0, 16, 16, '#eef3f7'); box(c, 0, 0, 16, 3, '#9aa3ab'); box(c, 0, 3, 16, 2, '#dde6ee'); });
+
+  makeTex(scene, 'bighouse', 112, 96, (c) => {
+    box(c, 8, 40, 96, 56, '#f4f1ea');
+    for (let y = 44; y < 92; y += 4) box(c, 8, y, 96, 1, '#dcd6c8');
+    box(c, 8, 40, 2, 56, '#dcd6c8'); box(c, 102, 40, 2, 56, '#c9c2b2');
+    for (let y = 0; y < 40; y++) {
+      const inset = Math.floor((40 - y) * 0.6);
+      box(c, 4 + inset, y, 104 - inset * 2, 1, y % 6 === 5 ? '#4a4f58' : '#5d636d');
+    }
+    for (let y = 0; y < 34; y += 6) { const inset = Math.floor((40 - y) * 0.6); box(c, 4 + inset, y, 104 - inset * 2, 2, '#ffffff'); }
+    box(c, 0, 38, 112, 3, '#3d4249'); box(c, 0, 37, 112, 1, '#ffffff');
+    box(c, 78, 4, 10, 18, '#8a5a44'); box(c, 77, 2, 12, 3, '#ffffff');
+    const win = (x, y) => { box(c, x - 1, y - 1, 14, 18, '#ffffff'); box(c, x, y, 12, 16, '#f2c14e'); box(c, x + 5, y, 2, 16, '#ffffff'); box(c, x, y + 7, 12, 2, '#ffffff'); box(c, x + 1, y + 1, 3, 3, '#ffe39a'); };
+    [16, 36, 64, 84].forEach((x) => win(x, 46));
+    win(16, 70); win(84, 70);
+    box(c, 48, 66, 16, 30, '#ffffff'); box(c, 50, 68, 12, 28, '#2f4a6b'); box(c, 59, 82, 2, 2, '#ffd43b');
+    box(c, 36, 62, 40, 3, '#ffffff'); [38, 72].forEach((x) => box(c, x, 64, 3, 32, '#f8f8f8'));
+    box(c, 30, 92, 52, 4, '#c9c2b2');
+  });
+
+  makeTex(scene, 'hospital', 128, 104, (c) => {
+    box(c, 0, 6, 128, 98, '#b9775a');
+    for (let y = 10; y < 100; y += 4) { box(c, 0, y, 128, 1, '#a3654a'); for (let x = ((y / 4) % 2) * 4; x < 128; x += 8) box(c, x, y - 3, 1, 3, '#a3654a'); }
+    box(c, 0, 0, 128, 7, '#e6e0d4'); box(c, 0, 0, 128, 2, '#ffffff');
+    for (let row = 0; row < 3; row++) for (let col = 0; col < 7; col++) {
+      if (row === 2 && (col === 3)) continue;
+      const x = 6 + col * 17, y = 12 + row * 22;
+      box(c, x - 1, y - 1, 13, 16, '#e6e0d4'); box(c, x, y, 11, 14, '#4f6a82'); box(c, x + 1, y + 1, 2, 4, '#89a9c2'); box(c, x, y + 7, 11, 1, '#e6e0d4');
+    }
+    box(c, 44, 56, 40, 6, '#e6e0d4'); box(c, 56, 62, 16, 10, '#ffffff'); box(c, 62, 63, 4, 8, '#d23a3a'); box(c, 58, 65, 12, 3, '#d23a3a');
+    box(c, 40, 74, 48, 4, '#d8d2c4'); box(c, 42, 77, 2, 21, '#d8d2c4'); box(c, 84, 77, 2, 21, '#d8d2c4');
+    box(c, 52, 78, 24, 22, '#e6e0d4'); box(c, 54, 80, 9, 20, '#3a5068'); box(c, 65, 80, 9, 20, '#3a5068'); box(c, 55, 81, 2, 8, '#6f8ea8');
+    for (let i = 0; i < 3; i++) box(c, 46 - i * 2, 98 + i * 2, 36 + i * 4, 2, i % 2 ? '#bdb6a8' : '#d8d2c4');
+  });
+
+  makeTex(scene, 'baretree', 30, 40, (c) => {
+    box(c, 13, 18, 4, 22, '#5b4636'); box(c, 13, 18, 1, 22, '#6e5744');
+    const br = (x, y, dx, dy, n) => { for (let i = 0; i < n; i++) box(c, x + dx * i, y + dy * i, 1, 1, '#5b4636'); };
+    br(14, 18, -1, -1, 10); br(16, 18, 1, -1, 10); br(15, 12, 0, -1, 12); br(10, 13, -1, -1, 5); br(20, 13, 1, -1, 6);
+    br(12, 8, 1, -1, 4); br(18, 7, -1, -1, 4); br(7, 10, -1, 0, 4); br(23, 9, 1, 0, 4);
+    [[4, 7], [5, 8], [25, 6], [24, 7], [15, 0], [8, 3], [21, 3], [12, 9], [19, 9], [14, 4]].forEach(([x, y]) => box(c, x, y, 2, 1, '#ffffff'));
+    box(c, 9, 38, 12, 2, '#dde6ee');
+  });
+  makeTex(scene, 'pram', 20, 18, (c) => {
+    box(c, 2, 4, 16, 8, '#2b3c66'); box(c, 2, 4, 16, 1, '#40568c');
+    box(c, 3, 2, 8, 4, '#2b3c66'); box(c, 4, 1, 6, 2, '#40568c');
+    box(c, 9, 5, 9, 4, '#f4a7c0'); box(c, 9, 5, 9, 1, '#ffd0de'); box(c, 11, 4, 3, 2, '#8a5a3c');
+    box(c, 17, 2, 1, 5, '#8a8f98'); box(c, 15, 1, 3, 1, '#8a8f98');
+    disc(c, 5, 14, 2, '#1a1a1a'); disc(c, 15, 14, 2, '#1a1a1a'); disc(c, 5, 14, 0, '#9aa0a8'); disc(c, 15, 14, 0, '#9aa0a8');
+  });
+  makeTex(scene, 'flake', 2, 2, (c) => { box(c, 0, 0, 2, 2, '#ffffff'); });
+
+  // ---- Greenville: the willow at the bottom of the hill ----
+  makeTex(scene, 'willow', 44, 50, (c) => {
+    box(c, 19, 30, 6, 20, '#5b3a1e'); box(c, 19, 30, 2, 20, '#6f4a28');
+    disc(c, 22, 16, 15, '#5f8a2e'); disc(c, 12, 20, 9, '#5f8a2e'); disc(c, 32, 20, 9, '#5f8a2e');
+    const r = rng(41);
+    for (let n = 0; n < 34; n++) { const x = 4 + ((r() * 36) | 0); box(c, x, 12 + ((r() * 10) | 0), 1, 10 + ((r() * 14) | 0), r() > 0.5 ? '#8fb34a' : '#4c7424'); }
+    for (let n = 0; n < 20; n++) box(c, 8 + ((r() * 28) | 0), 4 + ((r() * 12) | 0), 2, 1, '#a6c95c');
+  });
+
+  // ---- Brooklyn: P.S. 106 ("our school was once a castle") ----
+  makeTex(scene, 'school', 64, 100, (c) => {
+    box(c, 0, 8, 64, 92, '#b7a48a');
+    for (let y = 14; y < 86; y += 6) { box(c, 0, y, 64, 1, '#a08e74'); for (let x = ((y / 6) % 2) * 6; x < 64; x += 12) box(c, x, y - 5, 1, 5, '#a08e74'); }
+    for (let x = 0; x < 64; x += 8) box(c, x, 2, 5, 7, '#b7a48a');
+    box(c, 0, 8, 64, 2, '#8f7d64');
+    [[8, 16], [44, 16]].forEach(([x, y]) => { box(c, x, y + 4, 12, 22, '#3d5468'); box(c, x + 2, y, 8, 4, '#3d5468'); box(c, x + 1, y + 5, 2, 8, '#6f93ad'); box(c, x + 5, y, 2, 26, '#d8ccb6'); });
+    box(c, 28, 14, 2, 30, '#8a8f98');
+    box(c, 30, 14, 14, 9, '#ffffff');
+    for (let y = 14; y < 23; y += 2) box(c, 30, y, 14, 1, '#c0392b');
+    box(c, 30, 14, 6, 5, '#2a4a9a');
+    box(c, 6, 54, 12, 24, '#3d5468'); box(c, 46, 54, 12, 24, '#3d5468'); box(c, 7, 55, 2, 8, '#6f93ad'); box(c, 47, 55, 2, 8, '#6f93ad');
+    box(c, 22, 48, 20, 38, '#d8ccb6'); box(c, 24, 50, 16, 36, '#5a3a22'); box(c, 31, 50, 2, 36, '#3d2614'); box(c, 24, 50, 16, 4, '#d8ccb6'); box(c, 26, 51, 12, 2, '#3d5468');
+    for (let i = 0; i < 5; i++) box(c, 18 - i, 86 + i * 3, 28 + i * 2, 3, i % 2 ? '#a89f90' : '#c9c1ae');
+  });
+
+  // ---- the Page (ending) ----
+  makeTex(scene, 'paper', 16, 16, (c) => { box(c, 0, 0, 16, 16, '#fbf7ec'); box(c, 0, 15, 16, 1, '#bcd3ea'); });
+  makeTex(scene, 'paper_m', 16, 16, (c) => { box(c, 0, 0, 16, 16, '#fbf7ec'); box(c, 0, 15, 16, 1, '#bcd3ea'); box(c, 9, 0, 1, 16, '#e7a3a3'); });
+  makeTex(scene, 'desk', 44, 30, (c) => {
+    box(c, 2, 4, 40, 14, '#a5703c'); box(c, 2, 4, 40, 2, '#c28850'); box(c, 2, 17, 40, 3, '#7d5228');
+    box(c, 4, 20, 3, 10, '#5d3c1f'); box(c, 37, 20, 3, 10, '#5d3c1f');
+    box(c, 10, 5, 22, 11, '#ffffff'); box(c, 21, 5, 1, 11, '#c9c9c9');
+    for (let y = 7; y < 16; y += 2) { box(c, 11, y, 9, 1, '#bcd3ea'); box(c, 23, y, 8, 1, '#bcd3ea'); }
+    box(c, 12, 7, 6, 1, '#2b3a55'); box(c, 12, 9, 4, 1, '#2b3a55'); box(c, 24, 7, 5, 1, '#2b3a55');
+    box(c, 33, 8, 7, 2, '#f1c40f'); box(c, 39, 8, 2, 2, '#e8b59a'); box(c, 32, 8, 1, 2, '#2b2b2b');
+  });
+  makeTex(scene, 'ink', 4, 3, (c) => { box(c, 0, 1, 1, 1, '#2b3a55'); box(c, 1, 0, 2, 1, '#2b3a55'); box(c, 3, 1, 1, 2, '#2b3a55'); });
+  const patch = (key, w, h, col) => makeTex(scene, key, w, h, (c) => { c.fillStyle = col; c.beginPath(); c.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2); c.fill(); });
+  patch('snowpatch', 44, 14, '#e4ecf3');
+  patch('dirtpatch', 44, 14, '#b4502f');
+  patch('walkpatch', 44, 14, '#b8b4aa');
 }
 
 function rowhouse(scene, key, col, seed, extra) {

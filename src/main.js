@@ -8,7 +8,7 @@ const WORLD_W = COLS * TILE;
 const WORLD_H = ROWS * TILE;
 const INTERACT_DIST = 30;
 
-const STATE = { seen: new Set() };
+const STATE = { seen: new Set(), cardsShown: new Set() };
 const TOTAL = Object.values(MAPS).reduce((n, m) => n + m.spots.filter((s) => s.id).length, 0);
 const START = (() => {
   const q = new URLSearchParams(location.search).get('scene');
@@ -44,17 +44,26 @@ class WorldScene extends Phaser.Scene {
     this.keys = this.input.keyboard.addKeys({
       up: 'UP', down: 'DOWN', left: 'LEFT', right: 'RIGHT',
       w: 'W', a: 'A', s: 'S', d: 'D', e: 'E', space: 'SPACE', esc: 'ESC',
-      n: 'N', b: 'B', r: 'R', enter: 'ENTER',
+      n: 'N', b: 'B', r: 'R', c: 'C', enter: 'ENTER',
     });
 
     UI.hud(STATE.seen.size, z.name, TOTAL);
     UI.bind(this);
   }
 
-  // called by UI once the title / fade-in is done
+  // called by UI once the title / fade-in is done: show this place's slide cards the first time
   arrived() {
-    this.locked = false;
-    UI.playClip(CONTENT.scenes[this.mapId].audio);
+    if (STATE.cardsShown.has(this.mapId)) { this.locked = false; return; }
+    STATE.cardsShown.add(this.mapId);
+    this.showCards();
+  }
+
+  showCards() {
+    const cards = CONTENT.scenes[this.mapId].cards || [];
+    if (!cards.length) { this.locked = false; return; }
+    this.locked = true;
+    UI.prompt(null);
+    UI.cards(cards, () => { this.locked = false; });
   }
 
   solid(x, y, w, h) {
@@ -132,6 +141,7 @@ class WorldScene extends Phaser.Scene {
       }
     }
 
+    if (Phaser.Input.Keyboard.JustDown(k.c)) { this.showCards(); return; }
     if (Phaser.Input.Keyboard.JustDown(k.n)) this.gotoZone(this.zoneIndex + 1);
     if (Phaser.Input.Keyboard.JustDown(k.b)) this.gotoZone(this.zoneIndex - 1);
   }
@@ -140,7 +150,8 @@ class WorldScene extends Phaser.Scene {
     this.locked = true;
     UI.prompt(null);
     UI.stopAudio();
-    this.cameras.main.fadeOut(300, 0, 0, 0);
+    const paper = MAPS[to].dream || this.map.dream;
+    this.cameras.main.fadeOut(300, ...(paper ? [251, 247, 236] : [0, 0, 0]));
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.scene.start('ride', { from: this.mapId, to, spawn, zone });
     });
@@ -165,10 +176,10 @@ class WorldScene extends Phaser.Scene {
 }
 
 function rideOf(from, to) {
-  return CONTENT.rides[from + '>' + to] || { label: 'Ride the bus', title: CONTENT.scenes[from].name + '  →  ' + CONTENT.scenes[to].name, line: '', audio: null };
+  return CONTENT.rides[from + '>' + to] || { label: 'Travel', title: CONTENT.scenes[from].name + '  →  ' + CONTENT.scenes[to].name, line: '', audio: null };
 }
 
-// The bus ride between scenes: a night road, a Greyhound, and a title card.
+// The trip between scenes: a night road and a Greyhound, or (to and from the ending) a notebook page.
 class RideScene extends Phaser.Scene {
   constructor() { super('ride'); }
 
@@ -176,9 +187,39 @@ class RideScene extends Phaser.Scene {
 
   create() {
     buildTextures(this);
-    const W = 400, H = 225;
     const order = Object.keys(MAPS);
     this.dir = order.indexOf(this.d.to) > order.indexOf(this.d.from) ? 1 : -1;
+    this.dream = !!(MAPS[this.d.to].dream || MAPS[this.d.from].dream);
+    this.fade = this.dream ? [251, 247, 236] : [0, 0, 0];
+    this.dashes = [];
+    this.poles = [];
+    if (this.dream) this.drawPage(); else this.drawRoad();
+
+    const ride = rideOf(this.d.from, this.d.to);
+    UI.ride(ride.title, ride.line, this.dream);
+    this.cameras.main.fadeIn(300, ...this.fade);
+    this.keys = this.input.keyboard.addKeys({ e: 'E', space: 'SPACE', enter: 'ENTER' });
+    this.done = false;
+    if (!UI.playClip(ride.audio, () => this.finish())) this.time.delayedCall(3200, () => this.finish());
+  }
+
+  // the world disappears into a notebook page, words drifting up
+  drawPage() {
+    const W = 400, H = 225;
+    this.add.rectangle(0, 0, W, H, 0xfbf7ec).setOrigin(0);
+    for (let y = 15; y < H; y += 16) this.add.rectangle(0, y, W, 1, 0xbcd3ea).setOrigin(0);
+    this.add.rectangle(40, 0, 1, H, 0xe7a3a3).setOrigin(0);
+    this.time.addEvent({
+      delay: 90, loop: true, callback: () => {
+        const x0 = Math.random() * W, y0 = H + 4;
+        const ink = this.add.image(x0, y0, 'ink').setAlpha(0.8);
+        this.tweens.add({ targets: ink, y: y0 - 120 - Math.random() * 110, alpha: 0, duration: 2600 + Math.random() * 1500, onComplete: () => ink.destroy() });
+      },
+    });
+  }
+
+  drawRoad() {
+    const W = 400, H = 225;
     const g = this.add.graphics();
     const sky = ['#0b1026', '#111834', '#182042', '#1f2550', '#2a2a5c'];
     sky.forEach((col, i) => { g.fillStyle(Phaser.Display.Color.HexStringToColor(col).color); g.fillRect(0, i * 28, W, 28); });
@@ -194,31 +235,28 @@ class RideScene extends Phaser.Scene {
     g.fillStyle(0x4a4c52); g.fillRect(0, 150, W, 2); g.fillRect(0, 198, W, 2);
     g.fillStyle(0x0d0f14); g.fillRect(0, 200, W, H - 200);
 
-    this.dashes = [];
     for (let x = 0; x < W + 40; x += 40) this.dashes.push(this.add.rectangle(x, 174, 18, 2, 0xe8c547).setOrigin(0));
-    this.poles = [];
     for (let x = 0; x < W + 120; x += 120) this.poles.push(this.add.rectangle(x, 104, 2, 46, 0x3a3020).setOrigin(0));
+    if (this.d.from === 'ohio' || this.d.to === 'ohio') {
+      for (let n = 0; n < 40; n++) {
+        const f = this.add.image(Math.random() * W, Math.random() * H, 'flake').setAlpha(0.7);
+        this.tweens.add({ targets: f, y: H + 4, x: f.x - this.dir * 40, duration: 2000 + Math.random() * 2000, repeat: -1, delay: Math.random() * 1500 });
+      }
+    }
 
     const bus = this.add.image(W / 2, 190, 'greyhound').setOrigin(0.5, 1).setFlipX(this.dir < 0);
     this.tweens.add({ targets: bus, y: 189, duration: 140, yoyo: true, repeat: -1 });
     this.add.rectangle(W / 2 + this.dir * 44, 178, 34, 6, 0xffe066, 0.25).setBlendMode(Phaser.BlendModes.ADD);
-
-    const ride = rideOf(this.d.from, this.d.to);
-    UI.ride(ride.title, ride.line);
-    this.cameras.main.fadeIn(300, 0, 0, 0);
-    this.keys = this.input.keyboard.addKeys({ e: 'E', space: 'SPACE', enter: 'ENTER' });
-    this.done = false;
-    if (!UI.playClip(ride.audio, () => this.finish())) this.time.delayedCall(3200, () => this.finish());
   }
 
   finish() {
     if (this.done) return;
     this.done = true;
     UI.stopAudio();
-    this.cameras.main.fadeOut(300, 0, 0, 0);
+    this.cameras.main.fadeOut(300, ...this.fade);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       UI.ride(null);
-      this.scene.start('world', { map: this.d.to, spawn: this.d.spawn || MAPS[this.d.to].arrive, zone: this.d.zone });
+      this.scene.start('world', { map: this.d.to, spawn: this.d.spawn, zone: this.d.zone });
     });
   }
 
