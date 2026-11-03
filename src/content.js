@@ -62,9 +62,9 @@ window.CONTENT = {
           heading: 'Finding her voice',
           quote: { lines: ['And I know now', 'words are my Tingalayo. Words are my brilliance.'], cite: '“the selfish giant,” Part IV' },
           points: [
-            'School, family and faith keep correcting how she reads, writes and speaks.',
-            'Feminist lens: at the Kingdom Hall, women may not stand alone and tell God’s story.',
-            'Writing becomes the one place where no one else gets to name her.',
+            'Her voice grows step by step: wanting a voice, an inner voice, imagining her story, writing privately, writing publicly, and finally deciding.',
+            'Feminist lens: at the Kingdom Hall, women may not stand alone and tell God’s story, so she promises one day to “stand when I tell it.”',
+            'Words become her hidden gift, like her brother’s singing.',
           ],
           audio: 'audio/13-brooklyn.mp3',
         },
@@ -125,8 +125,9 @@ window.CONTENT = {
       quote: { lines: ['My name is Jacqueline Woodson', 'and I am ready for the ride.'], cite: '“the revolution,” Part V' },
       points: [
         'Ohio: identity is given (a certificate, a nickname, a face in old photographs).',
-        'Greenville: it is inherited, and divided. Brooklyn: it is claimed, through her voice.',
+        'Greenville: it is inherited, and divided. Brooklyn: her voice grows step by step until she claims it.',
         'The book moves from the passive “I am born” to the active “You decide.”',
+        'The memoir itself is her final step: “my past, my people, my memories, my story” (author’s note).',
       ],
       audio: 'audio/20-conclusion.mp3',
     },
@@ -211,14 +212,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Repetition: “Negro” three times in three lines. The label is stamped again and again.',
-          'Parallelism: “Negro here and Colored there.” The name changes with the place, not the person.',
+          "Repetition: “Negro” three times in three lines, like a stamp on a form.",
+          "Parallelism: “Negro here and Colored there.” The label changes with the place, not the person.",
         ],
         Identity: [
-          'Her first identity is written by others: race and gender on a form, then a state nickname.',
-          '“I am being named” is passive. She is named before she can speak.',
+          "Her first identity is written by others, before she can even speak.",
+          "“I am being named” is passive: she is the object of the sentence, not its subject.",
         ],
-        Lens: ['Historical: 1963, the year of Birmingham and the March on Washington. Official papers still sort people by race.'],
+        Lens: [
+          "Historical: in 1963, the year of the Birmingham campaign and the March on Washington, the law still sorted people by race. The labels on her certificate come from that system, not from her.",
+        ],
       },
       audio: 'audio/03-certificate.mp3',
     },
@@ -241,14 +244,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Natural speech: the argument is told in her parents’ own voices.',
-          'Line break: “Jack.” stands alone on the last line, set apart, like the father who later leaves.',
+          "Natural speech: her parents argue in their own words.",
+          "Enjambment: “Jack.” sits alone on the last line, set apart like the father who later leaves.",
         ],
         Identity: [
-          'Her name is a fight between her parents before it is hers.',
-          '“She’ll make that name her own” previews the whole book: a given name, later claimed.',
+          "Her name is a fight between her parents before it is hers.",
+          "Foreshadowing: “she’ll make that name her own” predicts the whole book.",
         ],
-        Lens: ['Gender: a “boy’s” name is supposed to make a girl strong; her mother adds letters to put distance from it.'],
+        Lens: [
+          "Gender: her father thinks a boy’s name will make a girl strong, and her mother adds letters to soften it. Even her name carries ideas about what girls should be.",
+        ],
       },
       audio: 'audio/04-jack.mp3',
     },
@@ -268,14 +273,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Repetition: “There I am” twice. She finds herself inside other people.',
-          'Imagery: brow, smile, hand. Inheritance is shown through the body.',
+          "Repetition: “There I am” twice. She finds herself in other people.",
+          "Imagery: a brow, a smile, a hand. Inheritance is shown through the body.",
         ],
         Identity: [
-          'Identity as inheritance: she exists in her family before she is born (the Donne side of the argument).',
-          '“Beginning.” sits alone on its line. Inheritance is where identity starts, not where it ends.',
+          "The inherited half of the definition: she exists in her family before she is born.",
+          "“Beginning.” sits alone on its line. Inheritance is the start, not the end.",
         ],
-        Lens: ['Historical: the Woodsons trace their line back to Thomas Woodson, and a great-great-grandfather fought in the Civil War. This family keeps its own records.'],
+        Lens: [
+          "Historical: the Woodsons keep their long family history “in Bibles, in stories” (“the woodsons of ohio”). For a Black family in America, holding on to that history is a way of deciding who you are when others try to define you.",
+        ],
       },
       audio: 'audio/05-photos.mp3',
     },
@@ -305,14 +312,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Listing: four new names, each defined by who they belong to.',
-          'Word play: “HopeDellJackie” runs three names into one word.',
+          "Listing: four new names, each about who she belongs to.",
+          "Word play: “HopeDellJackie” fuses three names into one word.",
         ],
         Identity: [
-          'A new place means new names: in the South she belongs to the family first.',
-          'Two ways of naming: her grandmother merges them, her grandfather lets each child be distinct. Sameness versus distinctness.',
+          "A new place gives her new names: in the South she belongs to the family first.",
+          "Her grandmother merges the names and her grandfather says each one slowly: sameness versus distinctness.",
         ],
-        Lens: ['Oral tradition: her grandfather gives each name “a whole lifetime.”'],
+        Lens: [
+          "Oral tradition: in the South, identity is passed on by speaking, through names, stories and songs. Her grandfather saying each name “as if he has all day long” shows that being named out loud is a way of being valued.",
+        ],
       },
       audio: 'audio/08-swing.mp3',
     },
@@ -332,14 +341,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Imagery of place: skin is compared to soil, linking the body and the land.',
-          'Connotation: “rich” means both fertile and valuable.',
+          "Imagery of place: skin is compared to soil, linking her father’s body to the land.",
+          "Connotation: “rich” means both fertile and valuable.",
         ],
         Identity: [
-          'She inherits the South even through the father who rejected it (“You can keep your South”).',
-          'Red dirt becomes her image of home. It returns in Brooklyn: “they were red dirt and pine trees.”',
+          "She inherits the South through her father, even though he rejected it (“You can keep your South”).",
+          "Red dirt becomes her image of home. It returns in Brooklyn: “they were red dirt and pine trees.”",
         ],
-        Lens: ['Historical: the land her great-grandparents worked unpaid becomes, for her, something rich.'],
+        Lens: [
+          "Historical: for many Black families, Southern land was tied to slavery and hard, unpaid labour. By calling it “rich,” Jackie sees value in a place her family had every reason to leave.",
+        ],
       },
       audio: 'audio/09-reddirt.mp3',
     },
@@ -363,14 +374,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Personification: the South can “slip out or / into” a mouth, as if speech were a border.',
-          'Natural speech: the banned words (ain’t, y’all, ma’am) are listed in the poem itself.',
+          "Imagery: the weeping willow becomes a switch, and then the boy starts to cry.",
+          "Personification: the South could “slip out or / into” a mouth, as if speech were a border.",
         ],
         Identity: [
-          'Divided identity: the children are told they are Northern while living in the South.',
-          'Her voice is controlled before it is found. They are “afraid to open our mouths.”',
+          "Divided identity: the children are told they are Northern while living in the South.",
+          "Her voice is shaped before she finds it: they are “afraid to open our mouths.”",
         ],
-        Lens: ['Historical: “ma’am” is banned as a memory of “southern subservient days.” The rules protect as much as they control.'],
+        Lens: [
+          "Historical: “ma’am” is banned as a memory of “southern subservient days,” when Black people had to bow to white people. The strict rules protect the children’s dignity as much as they control them.",
+        ],
       },
       audio: 'audio/10-switch.mp3',
     },
@@ -392,14 +405,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Capitals: “COLOREDS TO THE BACK!” is the sign’s voice, loud and official.',
-          'Repetition: “As good as anybody” is whispered, then repeated as a line of its own.',
+          "Capitals: “COLOREDS TO THE BACK!” reads like a loud, official sign.",
+          "Repetition: “As good as anybody” is whispered, then repeated on a line of its own.",
         ],
         Identity: [
-          'Two identities collide: the label the South gives them and the worth their mother insists on.',
-          'A whisper against a sign: the first time a quiet voice pushes back against a loud label.',
+          "Two identities clash: the label the South gives them and the worth their mother insists on.",
+          "The first time in the book a quiet voice pushes back against a loud label.",
         ],
-        Lens: ['Historical: Jim Crow buses in 1963, seven years after Rosa Parks, whom the first poem names.'],
+        Lens: [
+          "Historical: this is 1963, only seven years after Rosa Parks refused to give up her seat. With three small children, Jackie’s mother can’t refuse safely, so she resists the only way she can: with words.",
+        ],
       },
       audio: 'audio/11-bus.mp3',
     },
@@ -425,14 +440,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Enjambment: “so I nod even though / I am lying” splits what she does from what is true.',
-          'Word play: one letter, q, stands between her and her full name.',
+          "Enjambment: “so I nod even though / I am lying” splits what she does from what is true.",
+          "Word play: one letter, q, stands between her and her full name.",
         ],
         Identity: [
-          'A school rule renames her. She ends up as “Jackie” out of fear, not choice.',
-          'Contrast with “on paper”: there, she writes her full name freely.',
+          "A school rule renames her “Jackie.”",
+          "Step two of her voice: inside she thinks “No, my name is Jacqueline,” even though she can’t say it yet.",
         ],
-        Lens: ['Literacy norms: school decides what counts as correct writing, and a child pays for it with her name.'],
+        Lens: [
+          "Literacy norms: the school decides what “correct” writing looks like, and a child pays for it with part of her name.",
+        ],
       },
       audio: 'audio/14-school.mp3',
     },
@@ -454,14 +471,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Repetition: “someone who looked like me” twice. The discovery lands twice.',
-          'Intertextuality: she quotes the picture book Stevie inside her own poem.',
+          "Repetition: “someone who looked like me” twice.",
+          "Conditional: “If someone had taken / that book…” shows how close she came to missing it.",
         ],
         Identity: [
-          'She can only imagine having a voice once she sees herself in a book.',
-          '“had a story”: identity becomes something that can be written.',
+          "Step three of her voice: seeing herself in a book lets her imagine her own story.",
+          "The poem ends on “had a story.” Identity becomes something she can write.",
         ],
-        Lens: ['Literacy norms: “You’re too old for this.” Reading levels nearly took away the book that mattered most.'],
+        Lens: [
+          "Representation: Rudine Sims Bishop says books should be mirrors for children. Few books in the 1960s showed Black children, so Stevie shows Jackie that a life like hers is worth a story.",
+        ],
       },
       audio: 'audio/15-library.mp3',
     },
@@ -495,15 +514,17 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'White space: “I know” gets a line of its own.',
-          'Gradation: letters, words, meaning, thoughts, sentences. Each step is bigger than the last.',
-          'Structure: the poem ends like a book cover, “written by” and her full name.',
+          "White space: “I know” gets a line of its own.",
+          "Gradation: letters, words, meaning, thoughts, sentences, each step bigger than the last.",
+          "Structure: the poem ends like a book cover, “written by” and her full name.",
         ],
         Identity: [
-          'The opposite of the birth certificate: this time she writes her own name.',
-          'Her full name, not “Jackie”: the identity she claims for herself.',
+          "Step four of her voice: the reverse of the birth certificate. This time she writes her own name.",
+          "Her full name, not the school’s “Jackie.”",
         ],
-        Lens: ['Voice as agency: writing turns private thoughts into something that lasts. “On paper, things can live forever.”'],
+        Lens: [
+          "Literacy and power: at school, writing rules took part of her name; here, writing gives it back. As she says in another poem, “on paper, things can live forever.”",
+        ],
       },
       audio: 'audio/16-notebook.mp3',
     },
@@ -522,19 +543,30 @@ window.CONTENT = {
           '', '. . .', '',
           'They’re just words, I whisper.',
           'They’re not trying to hurt anybody!',
+          '',
+          '— and, with Maria, in chalk (“fresh air”): —',
+          '',
+          'Maria & Jackie Best Friends Forever wherever',
+          'there is smooth stone.',
+          'Write it so many times that it’s hard to walk',
+          'on our side',
+          'of the street without looking down',
+          'and seeing us there.',
         ],
-        cite: '“graffiti,” Part IV',
+        cite: '“graffiti” and “fresh air,” Part IV',
       },
       analysis: {
         Devices: [
-          'Repetition: “only know” three times. She is small, but determined.',
-          'Line break: “J-A-C- begin.” Her name is cut off mid-word when her uncle stops her.',
+          "Line break: “J-A-C- begin.” Her name is cut off mid-word when her uncle stops her.",
+          "Contrast: alone with spray paint she is stopped; with Maria in chalk, their names cover the street (“seeing us there”).",
         ],
         Identity: [
-          'She wants her name to be “a part of the history,” like the tags on the roofs and subway cars.',
-          'Her voice is policed again, this time by family: writing in the wrong place is a crime.',
+          "Step five of her voice: she takes her name out into the world, wanting it to be “a part of the history.”",
+          "Chosen family: Maria isn’t related to her, yet “us” becomes part of who she is.",
         ],
-        Lens: ['She rejects the idea that words are weapons: “They’re just words … not trying to hurt anybody.”'],
+        Lens: [
+          "Social: in 1970s Brooklyn, graffiti was how young people without power made their names visible. Jackie wants the same, but her uncle warns “people get arrested / for this,” so even writing her name in public is policed.",
+        ],
       },
       audio: 'audio/17-wall.mp3',
     },
@@ -567,15 +599,16 @@ window.CONTENT = {
       },
       analysis: {
         Devices: [
-          'Parallelism: six “X and Y” pairs. Every contradiction is kept, and none is chosen.',
-          'Second person: “You” replaces “I,” inviting the reader to do the same.',
-          'Structure: the last poem answers the first. “I do not yet know who I’ll be” becomes “where You decide.”',
+          "Parallelism: six “this and that” pairs. She keeps both sides of every pair.",
+          "Second person: “You,” with a capital letter, speaks to herself and to the reader.",
         ],
         Identity: [
-          'The working definition in her own words: inherited worlds (Woodson, Irby, Ohio, Greenville), gathered and authored by “You.”',
-          'Others give her the pieces, and she writes the whole. Donne and agency are both true.',
+          "Step six, full authorship: all her worlds “gather into one world / called You.”",
+          "The definition in her own words: inherited worlds, turned into a story she writes herself.",
         ],
-        Lens: ['Voice completes identity: the deciding happens through “each story / and each ending.” The writer decides.'],
+        Lens: [
+          "Structural: the last poem answers the first. The book opens with “I am born,” where life happens to her, and ends with “You decide.” The shape of the whole book is her journey from being named to naming herself.",
+        ],
       },
       audio: 'audio/19-eachworld.mp3',
     },
