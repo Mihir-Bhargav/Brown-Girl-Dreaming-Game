@@ -1,6 +1,6 @@
 # Brown Girl Dreaming: Interactive Analysis
 
-A 2D pixel-art game that presents an analysis of identity in Jacqueline Woodson's *Brown Girl Dreaming*. It is the presentation itself: you walk from Ohio to Greenville to Brooklyn, slide cards introduce each part of the argument, and each object opens a verse quote with analysis notes. Narration recordings can be attached to every card, object and trip.
+A 2D pixel-art game, made for an English class, that presents an analysis of identity in Jacqueline Woodson's *Brown Girl Dreaming*. It is the presentation itself: you walk from Ohio to Greenville to Brooklyn, slide cards introduce each part of the argument, and each object opens a verse quote with analysis notes. Every card, object and trip is narrated.
 
 Built with [Phaser 3](https://phaser.io). All pixel art is drawn in code, so there are no image files.
 
@@ -37,8 +37,6 @@ To travel, walk to a Greyhound (blue marker) and press E. **Checkpoints:** the w
 
 The green marker by the hopscotch in Brooklyn starts a three-lane runner down Madison Street, based on the poem "tomboy". Collect the letters of her full name, J-A-C-Q-U-E-L-I-N-E, in order. Use ← / → to change lanes and ↑ or Space to jump over broken bottles, jump ropes and hydrants, and dodge the parked cars. Five hits brings "Hope Dell Jackie—inside! / the game is over." Esc returns to the block at any time. Its text lives under `minigame` in `src/content.js`.
 
-The analysis text is a **draft**. See `pdfs/analysis draft.md` for the overview behind it.
-
 ## Where to put your content
 
 Every word shown in the game comes from `src/content.js`. Nothing is hard-coded elsewhere.
@@ -53,9 +51,7 @@ Quotes are cited by poem title and Part, because the ebook has no print page num
 
 ## Narration
 
-The `audio/` folder holds a **draft narration**: a computer voice (Microsoft "Andrew", made with edge-tts) reading `pdfs/entire script.md`. It has 20 clips, about 16 minutes in total. Each clip plays automatically when its card, object or trip opens, and R replays it.
-
-To use your own voice, record each segment of the script and save it over the draft file **with the same name** (for example `audio/03-certificate.mp3`). Nothing else needs to change. For a different file name or format, update the matching `audio` field in `src/content.js`.
+The `audio/` folder holds the narration, recorded by the author: 20 clips, about 19 minutes in total. Each clip plays automatically when its card, object or trip opens, and R replays it. To swap a clip, save a new file over it **with the same name** (for example `audio/03-certificate.mp3`), or update the matching `audio` field in `src/content.js`.
 
 ## Project layout
 
@@ -66,8 +62,8 @@ src/maps.js       each place's ground, scenery and interactable spots
 src/main.js       player, interaction, slide cards, zone hotkeys, trip scene
 src/sprites.js    pixel art, drawn in code
 src/ui.js         title card, HUD, panels, slide cards, trip card, audio
+audio/            narration, one clip per card, object and trip
 vendor/           Phaser engine (local copy)
-pdfs/             the book, class handouts, and analysis notes
 ```
 
 ## Adding a new object
@@ -85,3 +81,7 @@ pdfs/             the book, class handouts, and analysis notes
 ## Screenshot shortcuts
 
 Add `?go` to the URL to skip the title screen, `?go&open=notebook` to open an item's panel directly, and `?scene=brooklyn` to start in another place.
+
+## Credits
+
+Analysis, script and narration by Mihir Prabhat. All quotations are from *Brown Girl Dreaming* by Jacqueline Woodson (Nancy Paulsen Books, 2014), used here for a school literary analysis. The book itself is not included. Please read it.
