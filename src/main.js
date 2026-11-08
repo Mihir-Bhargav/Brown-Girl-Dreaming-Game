@@ -80,7 +80,7 @@ class WorldScene extends Phaser.Scene {
         if (s.float) this.tweens.add({ targets: img, y: s.y - 2, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       }
       if (s.solid) { const [dx, dy, w, h] = s.solid; this.solid(s.x + dx, s.y + dy, w, h); }
-      s.marker = this.add.image(s.ix, s.iy - 24, s.travel ? 'markgo' : s.game ? 'markplay' : 'mark').setDepth(9999);
+      s.marker = this.add.image(s.ix, s.iy - 24, s.travel ? (this.isForward(s.travel) ? 'markgo' : 'markback') : s.game ? 'markplay' : 'mark').setDepth(9999);
       if (s.id && STATE.seen.has(s.id)) s.marker.setAlpha(0.35);
       this.tweens.add({ targets: s.marker, y: s.marker.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       return s;
@@ -104,6 +104,12 @@ class WorldScene extends Phaser.Scene {
   refreshGate() {
     const open = this.gateLeft().left === 0;
     this.spots.forEach((s) => { if (s.travel && this.isForward(s.travel)) s.marker.setAlpha(open ? 1 : 0.3); });
+    // the "Next" hint: the first unexamined object here, or the way forward once everything is done
+    // (in narration order: the clips are numbered 01-20)
+    const todo = this.spots.filter((s) => s.id && !STATE.seen.has(s.id))
+      .sort((a, b) => (CONTENT.items[a.id].audio || '').localeCompare(CONTENT.items[b.id].audio || ''))[0];
+    const N = CONTENT.next;
+    UI.next(todo ? N.item.replace('{title}', CONTENT.items[todo.id].title) : N[this.mapId] || '');
   }
 
   buildPlayer(at) {
@@ -148,11 +154,19 @@ class WorldScene extends Phaser.Scene {
       if (d < best) { best = d; near = s; }
     });
     const gated = near && near.travel && this.isForward(near.travel) && this.gateLeft().left > 0;
-    UI.prompt(near ? (gated ? this.gateMessage() : near.travel ? rideOf(this.mapId, near.travel).label : near.game ? CONTENT.minigame.label : CONTENT.items[near.id].title) : null, gated);
+    const back = near && near.travel && !this.isForward(near.travel);
+    if (this.confirming && this.confirming !== near) this.confirming = null;  // walked away: cancel
+    const label = near && near.travel ? rideOf(this.mapId, near.travel).label : null;
+    UI.prompt(near ? (gated ? this.gateMessage()
+      : this.confirming === near ? CONTENT.confirmBack.replace('{label}', label.replace(/^←\s*/, ''))
+      : near.travel ? label : near.game ? CONTENT.minigame.label : CONTENT.items[near.id].title) : null, gated);
     if (near && !gated && (Phaser.Input.Keyboard.JustDown(k.e) || Phaser.Input.Keyboard.JustDown(k.space))) {
       if (near.game) {
         this.startRun();
+      } else if (back && this.confirming !== near) {
+        this.confirming = near;  // first press only asks
       } else if (near.travel) {
+        this.confirming = null;
         this.travel(near.travel, null, CONTENT.zones.findIndex((z) => z.scene === near.travel));
       } else {
         this.locked = true;

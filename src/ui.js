@@ -59,6 +59,12 @@ const UI = (function () {
     $('hud-found').textContent = 'Discovered ' + found + '/' + total;
   }
 
+  function next(text) {
+    const el = $('hud-next');
+    el.textContent = text;
+    el.style.display = text ? '' : 'none';
+  }
+
   function prompt(label, locked) {
     const el = $('prompt');
     if (label) { el.textContent = locked ? label : 'E  ' + label; el.classList.add('on'); } else el.classList.remove('on');
@@ -177,5 +183,5 @@ const UI = (function () {
     }
   }
 
-  return { init, bind, hud, prompt, toast, open, close, cards, ride, runHud, playClip, stopAudio, handleKeys };
+  return { init, bind, hud, next, prompt, toast, open, close, cards, ride, runHud, playClip, stopAudio, handleKeys };
 })();

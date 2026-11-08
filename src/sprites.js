@@ -266,6 +266,12 @@ function buildTextures(scene) {
     box(c, 0, 3, 7, 1, '#7fd3ff'); box(c, 1, 4, 5, 1, '#3fa9f5'); box(c, 2, 5, 3, 1, '#3fa9f5'); box(c, 3, 6, 1, 1, '#1f78c1');
   });
 
+  // grey arrow: a way back to an earlier place
+  makeTex(scene, 'markback', 7, 9, (c) => {
+    box(c, 3, 0, 1, 1, '#e4e4e4'); box(c, 2, 1, 3, 1, '#c8c8c8'); box(c, 1, 2, 5, 1, '#aaaaaa');
+    box(c, 0, 3, 7, 1, '#aaaaaa'); box(c, 1, 4, 5, 1, '#888888'); box(c, 2, 5, 3, 1, '#888888'); box(c, 3, 6, 1, 1, '#666666');
+  });
+
   // ---- Greyhound bus (64x28) ----
   makeTex(scene, 'greyhound', 64, 28, (c) => {
     box(c, 3, 2, 58, 3, '#e6e9ed');

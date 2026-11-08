@@ -9,6 +9,16 @@ window.CONTENT = {
 
   // Shown when you try to leave a place before examining every yellow marker in it.
   gate: 'Discover every yellow marker here first ({done} / {total})',
+  // Going back to an earlier place asks first, so nobody ends up there by accident.
+  confirmBack: '{label}?  Press E again',
+  // The hint at the top of the screen: what to do next.
+  next: {
+    item: 'Next: {title}',
+    ohio: 'Next: take the Greyhound to Greenville',
+    greenville: 'Next: take the Greyhound to Brooklyn',
+    brooklyn: 'Next: sit beneath the oak tree',
+    ending: '',
+  },
 
   // One entry per place, in journey order. `cards` are the slides shown on first arrival (C shows them again).
   scenes: {
@@ -148,31 +158,31 @@ window.CONTENT = {
   // Trips between places: prompt label, title card, one line, optional recording.
   rides: {
     'ohio>greenville': {
-      label: 'Ride the Greyhound south',
+      label: 'Next stop: Greenville  →',
       title: 'Columbus  →  Greenville',
       line: '“Each winter / just as the first of the snow begins to fall, / my mother goes home to South Carolina.”  (“each winter,” Part I)',
       audio: 'audio/06-ride-south.mp3',
     },
     'greenville>brooklyn': {
-      label: 'Ride the Greyhound north',
+      label: 'Next stop: Brooklyn  →',
       title: 'Greenville  →  New York City',
       line: '“Will there always be a road? / Will there always be a bus?”  (“halfway home #1,” Part II)',
       audio: 'audio/12-ride-north.mp3',
     },
     'brooklyn>greenville': {
-      label: 'Ride the Greyhound south',
+      label: '←  Back to Greenville',
       title: 'New York City  →  Greenville',
       line: '“Our feet are beginning to belong / in two different worlds”  (“mrs. hughes’s house,” Part III)',
       audio: null,
     },
-    'greenville>ohio': { label: 'Travel', title: 'Greenville  →  Columbus', line: '', audio: null },
+    'greenville>ohio': { label: '←  Back to Ohio', title: 'Greenville  →  Columbus', line: '', audio: null },
     'brooklyn>ending': {
       label: 'Sit beneath the oak tree',
       title: 'Beneath the oak tree',
       line: '“When I sit beneath / the shade of my block’s oak tree / the world disappears.”  (“how to listen #6,” Part IV)',
       audio: 'audio/18-ride-oak.mp3',
     },
-    'ending>brooklyn': { label: 'Stand up', title: 'Back to Madison Street', line: '', audio: null },
+    'ending>brooklyn': { label: '←  Back to Madison Street', title: 'Back to Madison Street', line: '', audio: null },
     'ending>ohio': { label: 'Begin again', title: 'Back to the beginning', line: '', audio: null },
   },
 
