@@ -2,7 +2,17 @@
 
 A 2D pixel-art game, made for an English class, that presents an analysis of identity in Jacqueline Woodson's *Brown Girl Dreaming*. It is the presentation itself: you walk from Ohio to Greenville to Brooklyn, slide cards introduce each part of the argument, and each object opens a verse quote with analysis notes. Every card, object and trip is narrated.
 
-Built with [Phaser 3](https://phaser.io). All pixel art is drawn in code, so there are no image files.
+![Title screen: Brown Girl Dreaming, Claiming an identity: an interactive analysis](screenshots/title.png)
+
+| | |
+| --- | --- |
+| ![The bus trip from Columbus to Greenville, with a quote from "each winter"](screenshots/trip.png) | ![The "Inherited, and divided" slide card in Greenville](screenshots/slide-card.png) |
+| *Trips between places quote the poems along the way* | *Slide cards introduce each part of the argument* |
+
+![Madison Street in Brooklyn, with brownstones, the oak tree and the pink factory wall](screenshots/brooklyn.png)
+*Madison Street, Brooklyn: walk up to each yellow marker to examine an object*
+
+Built with [Phaser 3](https://phaser.io). All the pixel art in the game is drawn in code, so the game itself uses no image files.
 
 ## Run it
 
@@ -63,6 +73,7 @@ src/main.js       player, interaction, slide cards, zone hotkeys, trip scene
 src/sprites.js    pixel art, drawn in code
 src/ui.js         title card, HUD, panels, slide cards, trip card, audio
 audio/            narration, one clip per card, object and trip
+screenshots/      images for this README
 vendor/           Phaser engine (local copy)
 ```
 
